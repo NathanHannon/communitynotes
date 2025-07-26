@@ -27,7 +27,7 @@ jobs:
         run: pip install google-generativeai
       
       - name: Install the project
-        run: cd template-api-note-writer && uv sync --locked 
+        run: cd template-api-note-writer && uv sync
 
       - name: Install xurl CLI
         run: |
