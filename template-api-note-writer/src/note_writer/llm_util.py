@@ -1,86 +1,54 @@
 import os
 
 import dotenv
-import requests
+import google.generativeai as genai
 
 
-def _make_request(payload: dict):
+def _make_request(
+    prompt: str, temperature: float = 0.8, model: str = "gemini-2.5-flash-lite"
+):
     """
     Currently extremely simple and includes no retry logic.
     """
-    chat_completions_url = "https://api.x.ai/v1/chat/completions"
-    headers = {
-    "Content-Type": "application/json",
-    "Authorization": f"Bearer {os.getenv('XAI_API_KEY')}",
-}
-    response = requests.post(chat_completions_url, headers=headers, json=payload)
-    if response.status_code != 200:
-        raise Exception(f"Error making request: {response.status_code} {response.text}")
-    return response.json()["choices"][0]["message"]["content"]
+    # 1. Configure the library with your API key
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+    # 2. Select the Gemini model
+    model = genai.GenerativeModel(model)
+
+    # 3. Send the prompt and get a response
+    response = model.generate_content(
+        prompt, generation_config={"temperature": temperature}
+    )
+
+    # 4. Return the text content of the response
+    return response.text
 
 
-def get_grok_response(prompt: str, temperature: float = 0.8, model: str = "grok-3-latest"):
-    payload = {
-        "messages": [
-            {
-                "role": "system",
-                "content": "You are a highly intelligent AI assistant.",
-            },
-            {"role": "user", "content": prompt},
-        ],
-        "model": model,
-        "temperature": temperature,
-    }
-    return _make_request(payload)
+def get_gemini_response(
+    prompt: str, temperature: float = 0.8, model: str = "gemini-2.5-flash-lite"
+):
+    return _make_request(prompt, temperature, model)
 
 
-def grok_describe_image(image_url: str, temperature: float = 0.01, model: str = "grok-2-vision-latest"):
+def gemini_describe_image(
+    image_url: str, temperature: float = 0.01, model: str = "gemini-2.5-flash-lite"
+):
     """
     Currently just describe image on its own. There are many possible
     improvements to consider making, e.g. passing in the post text or
     other context and describing the image and post text together.
     """
-    payload = {
-        "messages": [
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": image_url,
-                            "detail": "high",
-                        },
-                    },
-                    {
-                        "type": "text",
-                        "text": "What's in this image?",
-                    },
-                ],
-            },
-        ],
-        "model": model,
-        "temperature": temperature,
-    }
-    return _make_request(payload)
-
-
-def get_grok_live_search_response(prompt: str, temperature: float = 0.8, model= "grok-3-latest"):
-    payload = {
-        "messages": [{"role": "user", "content": prompt}],
-        "search_parameters": {
-            "mode": "on",
-        },
-        "model": model,
-        "temperature": temperature,
-    }
-    return _make_request(payload)
+    # Gemini does not support image URLs directly, so we need to download the image first
+    # and then upload it to the API. This is a placeholder for that functionality.
+    # For now, we will just return a dummy response.
+    return "This is a placeholder for the image description."
 
 
 if __name__ == "__main__":
     dotenv.load_dotenv()
     print(
-        get_grok_live_search_response(
+        get_gemini_response(
             "Provide me a digest of world news in the last 2 hours. Please respond with links to each source next to the claims that the source supports."
         )
     )

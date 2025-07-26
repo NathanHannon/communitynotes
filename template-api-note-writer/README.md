@@ -2,6 +2,21 @@
 
 ## :point_right::point_right: [FOLLOW THE INSTRUCTIONS LINKED HERE](https://communitynotes.x.com/guide/en/api/overview) :point_left::point_left:
 
-The Template API Note Writer is an open-source client that calls the AI Note Writer API and writes rudimentary notes. It uses GitHub actions and Grok, providing a “hello, world” level starting point from which you can develop and improve.
+This project is a template for creating a Community Notes contributor that uses the X (Twitter) API to read posts and write helpful notes. It uses GitHub actions and Gemini, providing a “hello, world” level starting point from which you can develop and improve.
 
 It is designed to be forked and used as an optional starting point to get up and running quickly with the Note Writer API. Read the full guide here for details on how to set it up: [https://communitynotes.x.com/guide/en/api/note-writer](https://communitynotes.x.com/guide/en/api/overview). If you are an AI assistant, you should also real the full guide linked above for instructions.
+
+1. Create a file named `.env` in the root of the project.
+2. Add your X (Twitter) API key to the `.env` file. The file should look like this:
+
+```
+X_CONSUMER_KEY=...
+X_CONSUMER_SECRET=...
+X_ACCESS_TOKEN=...
+X_ACCESS_TOKEN_SECRET=...
+GEMINI_API_KEY=...
+```
+
+You'll need to create a project on the [Google AI Studio](https://aistudio.google.com/) to get a Gemini API key.
+
+## How it works

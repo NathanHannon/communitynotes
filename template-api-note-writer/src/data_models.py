@@ -3,6 +3,7 @@ from enum import Enum
 from typing import List, Optional
 
 from pydantic import BaseModel
+from dataclasses import dataclass
 
 
 class ProposedNote(BaseModel):
@@ -21,8 +22,13 @@ class MisleadingTag(str, Enum):
     other = "other"
 
 
-class ProposedMisleadingNote(ProposedNote):
-    misleading_tags: List[MisleadingTag]
+@dataclass(frozen=True)
+class ProposedMisleadingNote:
+    post_id: str
+    note_text: str
+
+    def is_valid(self) -> bool:
+        return True
 
 
 class Media(BaseModel):
@@ -50,9 +56,8 @@ class PostWithContext(BaseModel):
     in_reply_to_post: Optional[Post] = None
 
 
-class NoteResult(BaseModel):
-    note: Optional[ProposedMisleadingNote] = None
+@dataclass(frozen=True)
+class NoteResult:
+    proposed_note: Optional[ProposedMisleadingNote] = None
     refusal: Optional[str] = None
-    error: Optional[str] = None
-    post: Optional[PostWithContext] = None
     context_description: Optional[str] = None
